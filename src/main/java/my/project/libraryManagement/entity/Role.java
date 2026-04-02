@@ -21,8 +21,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 30)
     @Enumerated(EnumType.STRING)
-    private RoleName roleName;
+    private RoleName name;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
     @JsonIgnore

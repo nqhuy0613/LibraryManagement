@@ -2,6 +2,7 @@ package my.project.libraryManagement.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,10 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 120)
     private String name;
+
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)

@@ -8,6 +8,7 @@ import lombok.Setter;
 import my.project.libraryManagement.enums.BorrowStatus;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "borrowrecords")
@@ -20,17 +21,20 @@ public class BorrowRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
+    @Column(nullable = false)
     private Instant borrowDate;
     @Enumerated(EnumType.STRING)
-    private BorrowStatus borrowStatus;
-    private Instant returnDate;
-    private Instant dueDate;
+    @Column(nullable = false)
+    private BorrowStatus borrowStatus = BorrowStatus.BORROWED;
+    private LocalDate returnDate;
+    @Column(nullable = false)
+    private LocalDate dueDate;
 
     @Column(columnDefinition = "TEXT")
     private String note;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "member_id")
     private User user;
 
     @ManyToOne
