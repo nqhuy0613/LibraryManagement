@@ -6,6 +6,7 @@ import my.project.libraryManagement.dto.response.BookResponse;
 import my.project.libraryManagement.entity.Author;
 import my.project.libraryManagement.entity.Book;
 import my.project.libraryManagement.entity.Category;
+import my.project.libraryManagement.enums.BookStatus;
 import my.project.libraryManagement.exception.BadRequestException;
 import my.project.libraryManagement.exception.DuplicateResourceException;
 import my.project.libraryManagement.exception.ResourceNotFoundException;
@@ -43,25 +44,27 @@ public class BookService {
     }
 
     public BookResponse createBook(CreateBookRequest createBookRequest) {
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         if(bookRepository.existsByIsbn(createBookRequest.getIsbn().trim())) {
             throw new DuplicateResourceException("Book already exists");
         }
         validateCopies(createBookRequest.getTotalCopies(),createBookRequest.getAvailableCopies());
         Book book = new Book();
-        book.setIsbn(createBookRequest.getIsbn());
+        book.setIsbn(createBookRequest.getIsbn().trim());
         book.setTitle(createBookRequest.getTitle());
         book.setDescription(createBookRequest.getDescription());
         book.setPublishDate(createBookRequest.getPublishedDate());
         book.setTotalCopies(createBookRequest.getTotalCopies());
         book.setAvailableCopies(createBookRequest.getAvailableCopies());
         book.setShelfCode(createBookRequest.getShelfCode());
-        book.setStatus(createBookRequest.getStatus());
+        book.setStatus(createBookRequest.getStatus()!= null ? createBookRequest.getStatus(): BookStatus.AVAILABLE);
         book.setAuthor(findAuthor(createBookRequest.getAuthorId()));
         book.setCategory(findCategory(createBookRequest.getCategoryId()));
         return toResponse(this.bookRepository.save(book));
     }
 
     public BookResponse updateBook(Long id, UpdateBookRequest update){
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         Book book = findBook(id);
         String newIsbn  = update.getIsbn().trim();
         boolean isDuplicate = bookRepository.findAll().stream()
@@ -71,14 +74,16 @@ public class BookService {
             throw new DuplicateResourceException("Book already exists");
         }
         validateCopies(update.getTotalCopies(),update.getAvailableCopies());
-        book.setIsbn(update.getIsbn());
+        book.setIsbn(update.getIsbn().trim());
         book.setTitle(update.getTitle());
         book.setDescription(update.getDescription());
         book.setPublishDate(update.getPublishedDate());
         book.setTotalCopies(update.getTotalCopies());
         book.setAvailableCopies(update.getAvailableCopies());
         book.setShelfCode(update.getShelfCode());
-        book.setStatus(update.getStatus());
+        if(update.getStatus() != null) {
+            book.setStatus(update.getStatus());
+        }
         book.setAuthor(findAuthor(update.getAuthorId()));
         book.setCategory(findCategory(update.getCategoryId()));
         return toResponse(bookRepository.save(book));

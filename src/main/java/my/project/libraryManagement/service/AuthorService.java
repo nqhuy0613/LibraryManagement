@@ -37,16 +37,18 @@ public class AuthorService {
     }
 
     public AuthorResponse createAuthor(CreateAuthorRequest createAuthorRequest){
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         Author author = new Author();
-        author.setName(createAuthorRequest.getName());
+        author.setName(createAuthorRequest.getName().trim());
         author.setBiography(createAuthorRequest.getBiography());
         authorRepository.save(author);
         return this.toResponse(author);
     }
 
     public AuthorResponse updateAuthor(Long id, UpdateAuthorRequest updateAuthorRequest){
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         Author author = findAuthor(id);
-        author.setName(updateAuthorRequest.getName());
+        author.setName(updateAuthorRequest.getName().trim());
         author.setBiography(updateAuthorRequest.getBiography());
         authorRepository.save(author);
         return this.toResponse(author);

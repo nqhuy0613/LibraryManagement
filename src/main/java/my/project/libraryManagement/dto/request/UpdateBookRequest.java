@@ -29,7 +29,7 @@ public class UpdateBookRequest {
     @Positive(message = "Total copies must be greater than 0")
     private Long totalCopies;
 
-
+    @NotNull(message = "AvailableCopies is required")
     @PositiveOrZero(message = "Available copies must be zero or greater than 0")
     private Long availableCopies;
 

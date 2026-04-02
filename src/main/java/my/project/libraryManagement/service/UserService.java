@@ -44,6 +44,7 @@ public class UserService {
     }
 
     public UserResponse createUser(CreateUserRequest request) {
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         if (userRepository.existsByEmail(request.getEmail().trim().toLowerCase())) {
             throw new DuplicateResourceException("Email already exists");
         }
@@ -56,7 +57,7 @@ public class UserService {
 
     public UserResponse updateUser(Long id, UpdateUserRequest request) {
         User user = findUser(id);
-
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         String newEmail = request.getEmail().trim().toLowerCase();
         boolean emailDuplicated = userRepository.findAll().stream()
                 .anyMatch(existing ->
@@ -90,7 +91,9 @@ public class UserService {
                                                 : roleNames);
         Set<Role> roles = new HashSet<>();
         for (RoleName roleName : effectiveRoles) {
-            Role role = roleRepository.findByName(roleName).orElse(null);
+            Role role = roleRepository.findByName(roleName).orElseThrow(
+                    () -> new ResourceNotFoundException("Role not found")
+            );
             if (role != null) {
                 roles.add(role);
             }

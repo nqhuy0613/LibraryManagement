@@ -13,8 +13,8 @@ public class CreateAuthorRequest {
 
     @NotBlank(message = "Author name is required")
     @Size(max = 120, message = "Author name must be at most 120 characters")
-    private String Name;
+    private String name;
 
     @Size(max = 2000, message = "Biography must be at most 2000 characters")
-    private String Biography;
+    private String biography;
 }

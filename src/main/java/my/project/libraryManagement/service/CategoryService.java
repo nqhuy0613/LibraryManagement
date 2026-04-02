@@ -32,7 +32,7 @@ public class CategoryService {
     }
 
     public CategoryResponse createCategory(CreateCategoryRequest request) {
-
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         if(categoryRepository.existsByName(request.getName())) {
             throw new DuplicateResourceException("Category already exists");
         }
@@ -44,6 +44,7 @@ public class CategoryService {
     }
 
     public CategoryResponse updateCategory(Long id, UpdateCategoryRequest request) {
+        // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
         Category category= findCategory(id);
         boolean categoryExists = categoryRepository.findAll().stream()
                 .anyMatch(x->x.getName().equals(request.getName())
@@ -52,6 +53,7 @@ public class CategoryService {
         if(categoryExists) {
             throw new DuplicateResourceException("Category already exists");
         }
+
         category.setName(request.getName());
         category.setDescription(request.getDescription());
 
@@ -64,7 +66,7 @@ public class CategoryService {
     }
 
     private CategoryResponse toResponse(Category category){
-        return new CategoryResponse(category.getName(), category.getDescription());
+        return new CategoryResponse(category.getId(),category.getName(), category.getDescription());
     }
 
     private Category findCategory(Long id){
