@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import my.project.librarymanagement.enums.BookStatus;
 
 import java.time.LocalDate;
 
@@ -36,8 +35,6 @@ public class UpdateBookRequest {
     @Size(max = 50, message = "shelfCode is must be at most 50 characters")
     private String shelfCode;
 
-
-    private BookStatus status;
 
     @NotNull(message = "Author id is required")
     private Long authorId;

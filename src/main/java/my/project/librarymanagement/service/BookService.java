@@ -6,7 +6,6 @@ import my.project.librarymanagement.dto.response.BookResponse;
 import my.project.librarymanagement.entity.Author;
 import my.project.librarymanagement.entity.Book;
 import my.project.librarymanagement.entity.Category;
-import my.project.librarymanagement.enums.BookStatus;
 import my.project.librarymanagement.exception.BadRequestException;
 import my.project.librarymanagement.exception.DuplicateResourceException;
 import my.project.librarymanagement.exception.ResourceNotFoundException;
@@ -51,11 +50,10 @@ public class BookService {
         book.setIsbn(createBookRequest.getIsbn().trim());
         book.setTitle(createBookRequest.getTitle());
         book.setDescription(createBookRequest.getDescription());
-        book.setPublishDate(createBookRequest.getPublishedDate());
+        book.setPublishedDate(createBookRequest.getPublishedDate());
         book.setTotalCopies(createBookRequest.getTotalCopies());
         book.setAvailableCopies(createBookRequest.getAvailableCopies());
         book.setShelfCode(createBookRequest.getShelfCode());
-        book.setStatus(createBookRequest.getStatus()!= null ? createBookRequest.getStatus(): BookStatus.AVAILABLE);
         book.setAuthor(findAuthor(createBookRequest.getAuthorId()));
         book.setCategory(findCategory(createBookRequest.getCategoryId()));
         return toResponse(this.bookRepository.save(book));
@@ -75,13 +73,10 @@ public class BookService {
         book.setIsbn(update.getIsbn().trim());
         book.setTitle(update.getTitle());
         book.setDescription(update.getDescription());
-        book.setPublishDate(update.getPublishedDate());
+        book.setPublishedDate(update.getPublishedDate());
         book.setTotalCopies(update.getTotalCopies());
         book.setAvailableCopies(update.getAvailableCopies());
         book.setShelfCode(update.getShelfCode());
-        if(update.getStatus() != null) {
-            book.setStatus(update.getStatus());
-        }
         book.setAuthor(findAuthor(update.getAuthorId()));
         book.setCategory(findCategory(update.getCategoryId()));
         return toResponse(bookRepository.save(book));
@@ -98,11 +93,10 @@ public class BookService {
         bookResponse.setTitle(book.getTitle());
         bookResponse.setIsbn(book.getIsbn());
         bookResponse.setDescription(book.getDescription());
-        bookResponse.setPublishedDate(book.getPublishDate());
+        bookResponse.setPublishedDate(book.getPublishedDate());
         bookResponse.setAvailableCopies(book.getAvailableCopies());
         bookResponse.setTotalCopies(book.getTotalCopies());
         bookResponse.setShelfCode(book.getShelfCode());
-        bookResponse.setStatus(book.getStatus());
         bookResponse.setVersion(book.getVersion());
         bookResponse.setAuthorName(book.getAuthor().getName());
         bookResponse.setCategoryName(book.getCategory().getName());

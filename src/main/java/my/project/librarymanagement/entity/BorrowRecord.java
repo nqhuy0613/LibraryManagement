@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import my.project.librarymanagement.enums.BorrowStatus;
-
-import java.time.Instant;
 import java.time.LocalDate;
 
 @Entity
@@ -22,7 +20,7 @@ public class BorrowRecord {
     Long id;
 
     @Column(nullable = false)
-    private Instant borrowDate;
+    private LocalDate borrowDate;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private BorrowStatus borrowStatus = BorrowStatus.BORROWED;

@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import my.project.librarymanagement.enums.BookStatus;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,10 +37,6 @@ public class Book {
     @Column(nullable = false)
     private Long availableCopies;
     private String shelfCode;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private BookStatus status = BookStatus.AVAILABLE;
 
     @Version
     private Long version;
