@@ -22,33 +22,26 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {return ResponseEntity.ok(success("Get all users", this.userService.getAllUsers()));}
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers() {return ResponseEntity.ok(ApiResponse.success("Get all users", this.userService.getAllUsers()));}
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id){return ResponseEntity.ok(success("Get user by id", this.userService.getUserById(id)));}
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable("id") Long id){return ResponseEntity.ok(ApiResponse.success("Get user by id", this.userService.getUserById(id)));}
 
     @PostMapping
     public ResponseEntity<ApiResponse<UserResponse>> createUser(@Valid @RequestBody CreateUserRequest createUserRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(success("Create an user", userService.createUser(createUserRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Create an user", userService.createUser(createUserRequest)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest, @PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(success("Update an user", userService.updateUser(id, updateUserRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Update an user", userService.updateUser(id, updateUserRequest)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteUser(@PathVariable("id") Long id){
         this.userService.deleteUser(id);
-        return ResponseEntity.ok(success("Delete an user",null));
+        return ResponseEntity.ok(ApiResponse.success("Delete an user",null));
     }
 
-    private<T> ApiResponse<T> success(String message, T data){
-        ApiResponse<T> res = new ApiResponse<>();
-        res.setSuccess(true);
-        res.setMessage(message);
-        res.setData(data);
-        res.setTimestamp(LocalDateTime.now());
-        return res;
-    }
+    
 }

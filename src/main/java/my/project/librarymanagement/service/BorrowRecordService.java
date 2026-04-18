@@ -7,6 +7,8 @@ import my.project.librarymanagement.entity.Book;
 import my.project.librarymanagement.entity.BorrowRecord;
 import my.project.librarymanagement.entity.User;
 import my.project.librarymanagement.enums.BorrowStatus;
+import my.project.librarymanagement.enums.RoleName;
+import my.project.librarymanagement.enums.UserStatus;
 import my.project.librarymanagement.exception.BadRequestException;
 import my.project.librarymanagement.exception.ResourceNotFoundException;
 import my.project.librarymanagement.repository.BookRepository;
@@ -33,20 +35,20 @@ public class BorrowRecordService {
 
     public BorrowRecordResponse borrowBook(BorrowBookRequest borrowBookRequest) {
         //check user id + check cac exception user
-        User user = findUserById(borrowBookRequest.getMemberId());
+        User user = findUserById(borrowBookRequest.getUserId());
         validateUser(user);
         //check book id + check cac exception book
         Book book = findBookById(borrowBookRequest.getBookId());
         validateBook(book);
         //check due date
         LocalDate today = LocalDate.now();
-        if(today.isAfter(borrowBookRequest.getDueDate())){
-            throw new BadRequestException("Due date is must be after today");
+        if(!borrowBookRequest.getDueDate().isAfter(today)){
+            throw new BadRequestException("Due date must be after today");
         }
         //check exception user da muon 1 quyen sach nhu vay
-        boolean check = this.borrowRecordRepository.existsByUser_IdAndBook_IdAndBorrowStatusIn(
-                borrowBookRequest.getMemberId(), borrowBookRequest.getBookId(),
-                List.of(BorrowStatus.BORROWED, BorrowStatus.OVERDUE)
+        boolean check = this.borrowRecordRepository.existsByUser_IdAndBook_IdAndBorrowStatus(
+                borrowBookRequest.getUserId(), borrowBookRequest.getBookId(),
+                BorrowStatus.BORROWED
         );
 
         if(check){
@@ -80,7 +82,7 @@ public class BorrowRecordService {
         }
         // update borrow record return date va status, update book tang avai
         br.setReturnDate(LocalDate.now());
-        br.setBorrowStatus(LocalDate.now().isAfter(br.getDueDate()) ? BorrowStatus.OVERDUE : BorrowStatus.RETURNED);
+        br.setBorrowStatus(BorrowStatus.RETURNED);
         if (returnBookRequest != null && returnBookRequest.getNote() != null && !returnBookRequest.getNote().isBlank()) {
             br.setNote(returnBookRequest.getNote().trim());
         }
@@ -92,76 +94,47 @@ public class BorrowRecordService {
 
     public BorrowRecordResponse getById(Long id){
         BorrowRecord br = findBorrowRecordById(id);
-        refreshOverdueStatusIfNeededInReadFlow(br);
         return toResponse(br);
     }
 
     public List<BorrowRecordResponse> getAllHistory() {
         List<BorrowRecord> brs = this.borrowRecordRepository.findAll();
-        refreshOverdueStatuses(brs);
         return brs.stream()
                 .map(x->toResponse(x))
                 .toList();
     }
 
-    public List<BorrowRecordResponse> getHistoryByMember(Long memberId) {
-        User user = findUserById(memberId);
-        List<BorrowRecord> brs = this.borrowRecordRepository.findAllByUser_Id(memberId);
-        refreshOverdueStatuses(brs);
+    public List<BorrowRecordResponse> getHistoryUser(Long userId) {
+
+        List<BorrowRecord> brs = this.borrowRecordRepository.findAllByUser_Id(userId);
+
         return brs.stream().map(x->toResponse(x)).toList();
     }
 
     public List<BorrowRecordResponse> getOverdueRecords(){
         List<BorrowRecord> brs = this.borrowRecordRepository.findAll();
-        refreshOverdueStatuses(brs);
+
         return brs.stream()
-                .filter(x->x.getBorrowStatus().equals(BorrowStatus.OVERDUE))
+                .filter(x->isOverdue(x))
                 .map(x->toResponse(x)).toList();
     }
 
-    private void refreshOverdueStatuses(List<BorrowRecord> records) {
-        boolean changed = false;
-        for (BorrowRecord record : records) {
-            changed |= refreshOverdueStatus(record);
-        }
-        if (changed) {
-            borrowRecordRepository.saveAll(records);
-        }
-    }
-
-    private void refreshOverdueStatusIfNeededInReadFlow(BorrowRecord borrowRecord) {
-        if (refreshOverdueStatus(borrowRecord)) {
-            borrowRecordRepository.save(borrowRecord);
-        }
-    }
-
-    private boolean refreshOverdueStatus(BorrowRecord borrowRecord) {
-        if (borrowRecord.getBorrowStatus() == BorrowStatus.BORROWED
-                && borrowRecord.getDueDate() != null
-                && borrowRecord.getDueDate().isBefore(LocalDate.now())) {
-            borrowRecord.setBorrowStatus(BorrowStatus.OVERDUE);
-            return true;
-        }
-        return false;
-    }
-
-
 
     private void validateUser(User user) {
-        boolean userRole = user.getRoles().stream().anyMatch(role -> role.getName().equals("ROLE_USER"));
+        boolean userRole = user.getRoles().stream().anyMatch(role -> role.getName()==RoleName.MEMBER);
         if (!userRole) {
             throw new BadRequestException("The selected user does not have MEMBER role");
         }
 
-        boolean userStatus = user.getStatus().equals("ACTIVE");
+        boolean userStatus = user.getStatus()== UserStatus.ACTIVE;
         if (!userStatus) {
             throw new BadRequestException("The selected user is not ACTIVE or is suspended");
         }
     }
 
-    private User findUserById(Long memberId) {
-        User user = userRepository.findById(memberId).orElseThrow(
-                ()->new ResourceNotFoundException("User not found with id: " + memberId)
+    private User findUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                ()->new ResourceNotFoundException("User not found with id: " + userId)
         );
         return user;
     }
@@ -181,8 +154,16 @@ public class BorrowRecordService {
     }
 
     private void validateBook(Book book) {
-        if (book.getAvailableCopies() == 0)
+        if (book.getAvailableCopies() <= 0)
             throw new BadRequestException("Book has no available copies");
+    }
+
+    private boolean isOverdue(BorrowRecord br) {
+        if (br.getBorrowStatus()==BorrowStatus.BORROWED && br.getDueDate().isBefore(LocalDate.now())) {
+            return true;
+
+        }
+        return false;
     }
 
     private BorrowRecordResponse toResponse(BorrowRecord borrowRecord) {
@@ -193,8 +174,9 @@ public class BorrowRecordService {
                 .returnDate(borrowRecord.getReturnDate())
                 .status(borrowRecord.getBorrowStatus())
                 .note(borrowRecord.getNote())
-                .memberId(borrowRecord.getUser().getId())
+                .userId(borrowRecord.getUser().getId())
                 .bookId(borrowRecord.getBook().getId())
+                .overdue(isOverdue(borrowRecord))
                 .build();
     }
 

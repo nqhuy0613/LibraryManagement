@@ -17,5 +17,12 @@ public class ApiResponse<T> {
     private T data;
     private String message;
     private LocalDateTime timestamp;
-
+    public static <T> ApiResponse<T> success(String message, T data){
+        ApiResponse<T> res = new ApiResponse<>();
+        res.setSuccess(true);
+        res.setMessage(message);
+        res.setData(data);
+        res.setTimestamp(LocalDateTime.now());
+        return res;
+    }
 }

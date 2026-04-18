@@ -31,11 +31,11 @@ public class CategoryService {
 
     public CategoryResponse createCategory(CreateCategoryRequest request) {
         // check trùng cột unique create/update nên dùng existBy..IgnoreCaseAndIdNot để tối ưu
-        if(categoryRepository.existsByName(request.getName())) {
+        if(categoryRepository.existsByName(request.getName().toLowerCase().trim())) {
             throw new DuplicateResourceException("Category already exists");
         }
         Category category = new Category();
-        category.setName(request.getName());
+        category.setName(request.getName().trim());
         category.setDescription(request.getDescription());
 
         return toResponse(this.categoryRepository.save(category));

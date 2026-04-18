@@ -64,7 +64,7 @@ public class AuthorService {
 
     private Author findAuthor(Long id){
         return this.authorRepository.findById(id).orElseThrow(
-                ()->new ResourceNotFoundException("author not found"));
+                ()->new ResourceNotFoundException("Author not found"));
 
     }
 }

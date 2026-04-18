@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class BorrowBookRequest {
-    @NotNull(message = "Member id is required")
-    private Long memberId;
+    @NotNull(message = "User id is required")
+    private Long userId;
 
     @NotNull(message = "Book id is required")
     private Long bookId;

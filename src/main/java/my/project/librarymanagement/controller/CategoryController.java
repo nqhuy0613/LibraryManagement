@@ -22,33 +22,26 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {return ResponseEntity.ok(success("Get all categories", categoryService.getAllCategories()));}
+    public ResponseEntity<ApiResponse<List<CategoryResponse>>> getAllCategories() {return ResponseEntity.ok(ApiResponse.success("Get all categories", categoryService.getAllCategories()));}
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(@PathVariable("id") Long id){return ResponseEntity.ok(success("Get category by id",categoryService.getCategoryById(id)));}
+    public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(@PathVariable("id") Long id){return ResponseEntity.ok(ApiResponse.success("Get category by id",categoryService.getCategoryById(id)));}
 
     @PostMapping
     public ResponseEntity<ApiResponse<CategoryResponse>> createCategory(@Valid @RequestBody CreateCategoryRequest createCategoryRequest){
-        return ResponseEntity.status(HttpStatus.CREATED).body(success("Create category", categoryService.createCategory(createCategoryRequest)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("Create category", categoryService.createCategory(createCategoryRequest)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<CategoryResponse>> updateCategory(@Valid @RequestBody UpdateCategoryRequest updateCategoryRequest, @PathVariable("id") Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(success("Update category", categoryService.updateCategory(id, updateCategoryRequest)));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success("Update category", categoryService.updateCategory(id, updateCategoryRequest)));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable("id") Long id){
         this.categoryService.deleteCategory(id);
-        return ResponseEntity.ok(success("Delete a category", null));
+        return ResponseEntity.ok(ApiResponse.success("Delete a category", null));
     }
 
-    private<T> ApiResponse<T> success(String message, T data){
-        ApiResponse<T> res = new ApiResponse<>();
-        res.setSuccess(true);
-        res.setMessage(message);
-        res.setData(data);
-        res.setTimestamp(LocalDateTime.now());
-        return res;
-    }
+    
 }

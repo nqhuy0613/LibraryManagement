@@ -114,9 +114,15 @@ public class UserService {
         user.setEmail(request.getEmail().trim().toLowerCase());
         user.setPassword(request.getPassword());
         user.setPhoneNumber(request.getPhoneNumber());
-        user.setEnabled(request.getEnabled() == null || request.getEnabled());
-        user.setStatus(request.getStatus() == null ? UserStatus.ACTIVE : request.getStatus());
-        user.setRoles(resolveRoles(request.getRoles()));
+        if (request.getEnabled() != null) {
+            user.setEnabled(request.getEnabled());
+        }
+        if (request.getStatus() != null) {
+            user.setStatus(request.getStatus());
+        }
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            user.setRoles(resolveRoles(request.getRoles()));
+        }
     }
 
     private UserResponse toResponse(User user) {

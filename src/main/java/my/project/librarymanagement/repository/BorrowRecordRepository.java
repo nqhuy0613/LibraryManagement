@@ -10,10 +10,10 @@ import java.util.List;
 
 @Repository
 public interface BorrowRecordRepository extends JpaRepository<BorrowRecord,Long> {
-    boolean existsByUser_IdAndBook_IdAndBorrowStatusIn(
+    boolean existsByUser_IdAndBook_IdAndBorrowStatus(
             Long userId,
             Long bookId,
-            Collection<BorrowStatus> statuses
+            BorrowStatus statuses
     );
     List<BorrowRecord> findAllByUser_Id(Long memberId);
 }

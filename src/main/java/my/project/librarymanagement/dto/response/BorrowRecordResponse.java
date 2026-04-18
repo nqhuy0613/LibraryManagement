@@ -17,8 +17,8 @@ public class BorrowRecordResponse {
     private LocalDate returnDate;
     private BorrowStatus status;
     private String note;
-
-    private Long memberId;
+    private boolean overdue;
+    private Long userId;
 
     private Long bookId;
 }

@@ -47,7 +47,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
-    List<BorrowRecord> borrowRecords;
+    private List<BorrowRecord> borrowRecords;
 //    private Instant createdAt;
 //    private Instant updatedAt;
 }
