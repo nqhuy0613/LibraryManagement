@@ -24,33 +24,33 @@ public class BorrowRecordController {
     @PostMapping("/borrow")
     public ResponseEntity<ApiResponse<BorrowRecordResponse>> borrowBook(@Valid @RequestBody BorrowBookRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success("Book borrowed ApiResponse.successfully", borrowRecordService.borrowBook(request)));
+                .body(ApiResponse.success("Borrow book successfully", borrowRecordService.borrowBook(request)));
     }
 
     @PutMapping("/{id}/return")
     public ResponseEntity<ApiResponse<BorrowRecordResponse>> returnBook(@PathVariable Long id,
                                                                         @Valid @RequestBody(required = false) ReturnBookRequest request) {
-        return ResponseEntity.ok(ApiResponse.success("Book returned ApiResponse.successfully", borrowRecordService.returnBook(request,id)));
+        return ResponseEntity.ok(ApiResponse.success("Return book successfully", borrowRecordService.returnBook(request,id)));
     }
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<BorrowRecordResponse>>> getAllHistory() {
-        return ResponseEntity.ok(ApiResponse.success("Borrow history fetched ApiResponse.successfully", borrowRecordService.getAllHistory()));
+        return ResponseEntity.ok(ApiResponse.success("Get all Borrow Records", borrowRecordService.getAllHistory()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<BorrowRecordResponse>> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success("Borrow record fetched ApiResponse.successfully", borrowRecordService.getById(id)));
+        return ResponseEntity.ok(ApiResponse.success("Get Borrow Record By Id", borrowRecordService.getById(id)));
     }
 
     @GetMapping("/history/user/{userId}")
     public ResponseEntity<ApiResponse<List<BorrowRecordResponse>>> getHistoryUser(@PathVariable Long userId) {
-        return ResponseEntity.ok(ApiResponse.success("User borrow history fetched ApiResponse.successfully", borrowRecordService.getHistoryUser(userId)));
+        return ResponseEntity.ok(ApiResponse.success("Get Borrow Record By User Id", borrowRecordService.getHistoryUser(userId)));
     }
 
     @GetMapping("/overdue")
     public ResponseEntity<ApiResponse<List<BorrowRecordResponse>>> getOverdueRecords() {
-        return ResponseEntity.ok(ApiResponse.success("Overdue borrow records fetched ApiResponse.successfully", borrowRecordService.getOverdueRecords()));
+        return ResponseEntity.ok(ApiResponse.success("Get Overdue Borrow Record", borrowRecordService.getOverdueRecords()));
     }
 
     
