@@ -6,6 +6,7 @@ import my.project.librarymanagement.dto.response.common.FieldErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -44,6 +45,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request){
         return ErrorResponse.buildErrorResponse("Request violates databases constraints", HttpStatus.CONFLICT, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLocking(
+            ObjectOptimisticLockingFailureException ex, HttpServletRequest request
+    ){
+        return ErrorResponse.buildErrorResponse("The book was updated by another request. Please try again.", HttpStatus.CONFLICT, request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)

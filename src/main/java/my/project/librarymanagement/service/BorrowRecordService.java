@@ -52,7 +52,7 @@ public class BorrowRecordService {
         );
 
         if(check){
-            throw new BadRequestException("This member is already borrowing this book and has not returned it yet");
+            throw new BadRequestException("This user is already borrowing this book and has not returned it yet");
         }
         //giam avail copies, update status
         book.setAvailableCopies(book.getAvailableCopies()-1);
