@@ -16,6 +16,8 @@ import my.project.librarymanagement.repository.BorrowRecordRepository;
 import my.project.librarymanagement.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -26,11 +28,13 @@ public class BorrowRecordService {
     private final BorrowRecordRepository borrowRecordRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
-    public BorrowRecordService(BorrowRecordRepository borrowRecordRepository, BookRepository bookRepository, UserRepository userRepository) {
+    public BorrowRecordService(BorrowRecordRepository borrowRecordRepository, BookRepository bookRepository, UserRepository userRepository, EmailService emailService) {
         this.borrowRecordRepository = borrowRecordRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
+        this.emailService = emailService;
     }
 
     public BorrowRecordResponse borrowBook(BorrowBookRequest borrowBookRequest) {
@@ -65,7 +69,17 @@ public class BorrowRecordService {
         br.setBorrowDate(today);
         br.setBorrowStatus(BorrowStatus.BORROWED);
         br.setNote(borrowBookRequest.getNote());
-        return toResponse(this.borrowRecordRepository.save(br));
+
+        BorrowRecord borrowRecord = this.borrowRecordRepository.save(br);
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                emailService.sendBorrowSuccessEmail(borrowRecord);
+            }
+        });
+
+        return toResponse(borrowRecord);
     }
 
     public BorrowRecordResponse returnBook(ReturnBookRequest returnBookRequest, Long BorrowRecordId) {
@@ -89,7 +103,18 @@ public class BorrowRecordService {
         book.setAvailableCopies(book.getAvailableCopies()+1);
         this.bookRepository.save(book);
         //luu borrow record, chuyen sang response va return
-        return toResponse(this.borrowRecordRepository.save(br));
+
+        BorrowRecord borrowRecord = this.borrowRecordRepository.save(br);
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                emailService.sendReturnSuccessEmail(borrowRecord);
+            }
+        });
+
+
+        return toResponse(borrowRecord);
     }
 
     public BorrowRecordResponse getById(Long id){
