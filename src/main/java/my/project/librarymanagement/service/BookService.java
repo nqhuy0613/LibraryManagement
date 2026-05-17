@@ -1,7 +1,7 @@
 package my.project.librarymanagement.service;
 
-import my.project.librarymanagement.dto.request.CreateBookRequest;
-import my.project.librarymanagement.dto.request.UpdateBookRequest;
+import my.project.librarymanagement.dto.request.book.CreateBookRequest;
+import my.project.librarymanagement.dto.request.book.UpdateBookRequest;
 import my.project.librarymanagement.dto.response.BookResponse;
 import my.project.librarymanagement.entity.Author;
 import my.project.librarymanagement.entity.Book;

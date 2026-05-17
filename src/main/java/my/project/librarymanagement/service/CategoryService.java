@@ -1,7 +1,7 @@
 package my.project.librarymanagement.service;
 
-import my.project.librarymanagement.dto.request.CreateCategoryRequest;
-import my.project.librarymanagement.dto.request.UpdateCategoryRequest;
+import my.project.librarymanagement.dto.request.category.CreateCategoryRequest;
+import my.project.librarymanagement.dto.request.category.UpdateCategoryRequest;
 import my.project.librarymanagement.dto.response.CategoryResponse;
 import my.project.librarymanagement.entity.Category;
 import my.project.librarymanagement.exception.DuplicateResourceException;

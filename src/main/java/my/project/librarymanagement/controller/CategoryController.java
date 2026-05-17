@@ -1,8 +1,8 @@
 package my.project.librarymanagement.controller;
 
 import jakarta.validation.Valid;
-import my.project.librarymanagement.dto.request.CreateCategoryRequest;
-import my.project.librarymanagement.dto.request.UpdateCategoryRequest;
+import my.project.librarymanagement.dto.request.category.CreateCategoryRequest;
+import my.project.librarymanagement.dto.request.category.UpdateCategoryRequest;
 import my.project.librarymanagement.dto.response.CategoryResponse;
 import my.project.librarymanagement.dto.response.common.ApiResponse;
 import my.project.librarymanagement.service.CategoryService;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

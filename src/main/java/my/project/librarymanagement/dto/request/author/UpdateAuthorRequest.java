@@ -1,4 +1,4 @@
-package my.project.librarymanagement.dto.request;
+package my.project.librarymanagement.dto.request.author;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -11,8 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateAuthorRequest {
-
+public class UpdateAuthorRequest {
     @NotBlank(message = "Author name is required")
     @Size(max = 120, message = "Author name must be at most 120 characters")
     private String name;

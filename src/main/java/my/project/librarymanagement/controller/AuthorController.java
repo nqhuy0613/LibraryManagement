@@ -1,8 +1,8 @@
 package my.project.librarymanagement.controller;
 
 import jakarta.validation.Valid;
-import my.project.librarymanagement.dto.request.CreateAuthorRequest;
-import my.project.librarymanagement.dto.request.UpdateAuthorRequest;
+import my.project.librarymanagement.dto.request.author.CreateAuthorRequest;
+import my.project.librarymanagement.dto.request.author.UpdateAuthorRequest;
 import my.project.librarymanagement.dto.response.AuthorResponse;
 import my.project.librarymanagement.dto.response.common.ApiResponse;
 import my.project.librarymanagement.service.AuthorService;

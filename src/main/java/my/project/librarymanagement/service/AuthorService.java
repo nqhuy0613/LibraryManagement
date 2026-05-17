@@ -1,7 +1,7 @@
 package my.project.librarymanagement.service;
 
-import my.project.librarymanagement.dto.request.CreateAuthorRequest;
-import my.project.librarymanagement.dto.request.UpdateAuthorRequest;
+import my.project.librarymanagement.dto.request.author.CreateAuthorRequest;
+import my.project.librarymanagement.dto.request.author.UpdateAuthorRequest;
 import my.project.librarymanagement.dto.response.AuthorResponse;
 import my.project.librarymanagement.entity.Author;
 import my.project.librarymanagement.exception.ResourceNotFoundException;

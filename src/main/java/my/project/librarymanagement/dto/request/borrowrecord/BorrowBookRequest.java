@@ -1,6 +1,5 @@
-package my.project.librarymanagement.dto.request;
+package my.project.librarymanagement.dto.request.borrowrecord;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

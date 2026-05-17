@@ -1,8 +1,8 @@
 package my.project.librarymanagement.controller;
 
 import jakarta.validation.Valid;
-import my.project.librarymanagement.dto.request.CreateUserRequest;
-import my.project.librarymanagement.dto.request.UpdateUserRequest;
+import my.project.librarymanagement.dto.request.user.CreateUserRequest;
+import my.project.librarymanagement.dto.request.user.UpdateUserRequest;
 import my.project.librarymanagement.dto.response.UserResponse;
 import my.project.librarymanagement.dto.response.common.ApiResponse;
 import my.project.librarymanagement.service.UserService;
@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController

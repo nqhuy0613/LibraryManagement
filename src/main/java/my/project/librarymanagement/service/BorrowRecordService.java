@@ -1,7 +1,7 @@
 package my.project.librarymanagement.service;
 
-import my.project.librarymanagement.dto.request.BorrowBookRequest;
-import my.project.librarymanagement.dto.request.ReturnBookRequest;
+import my.project.librarymanagement.dto.request.borrowrecord.BorrowBookRequest;
+import my.project.librarymanagement.dto.request.borrowrecord.ReturnBookRequest;
 import my.project.librarymanagement.dto.response.BorrowRecordResponse;
 import my.project.librarymanagement.entity.Book;
 import my.project.librarymanagement.entity.BorrowRecord;
@@ -14,6 +14,8 @@ import my.project.librarymanagement.exception.ResourceNotFoundException;
 import my.project.librarymanagement.repository.BookRepository;
 import my.project.librarymanagement.repository.BorrowRecordRepository;
 import my.project.librarymanagement.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -37,6 +39,7 @@ public class BorrowRecordService {
         this.emailService = emailService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public BorrowRecordResponse borrowBook(BorrowBookRequest borrowBookRequest) {
         //check user id + check cac exception user
         User user = findUserById(borrowBookRequest.getUserId());
@@ -82,6 +85,7 @@ public class BorrowRecordService {
         return toResponse(borrowRecord);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public BorrowRecordResponse returnBook(ReturnBookRequest returnBookRequest, Long BorrowRecordId) {
         // check borrow record id
         BorrowRecord br = findBorrowRecordById(BorrowRecordId);
@@ -117,11 +121,13 @@ public class BorrowRecordService {
         return toResponse(borrowRecord);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public BorrowRecordResponse getById(Long id){
         BorrowRecord br = findBorrowRecordById(id);
         return toResponse(br);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public List<BorrowRecordResponse> getAllHistory() {
         List<BorrowRecord> brs = this.borrowRecordRepository.findAll();
         return brs.stream()
@@ -129,13 +135,15 @@ public class BorrowRecordService {
                 .toList();
     }
 
-    public List<BorrowRecordResponse> getHistoryUser(Long userId) {
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN') or @borrowRecordSecurity.canViewUserHistory(#userId)")
+    public List<BorrowRecordResponse> getHistoryUser(@P("userId") Long userId) {
 
         List<BorrowRecord> brs = this.borrowRecordRepository.findAllByUser_Id(userId);
 
         return brs.stream().map(x->toResponse(x)).toList();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'LIBRARIAN')")
     public List<BorrowRecordResponse> getOverdueRecords(){
         List<BorrowRecord> brs = this.borrowRecordRepository.findAll();
 

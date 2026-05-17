@@ -1,7 +1,7 @@
 package my.project.librarymanagement.service;
 
-import my.project.librarymanagement.dto.request.CreateUserRequest;
-import my.project.librarymanagement.dto.request.UpdateUserRequest;
+import my.project.librarymanagement.dto.request.user.CreateUserRequest;
+import my.project.librarymanagement.dto.request.user.UpdateUserRequest;
 import my.project.librarymanagement.dto.response.UserResponse;
 import my.project.librarymanagement.entity.User;
 import my.project.librarymanagement.entity.Role;
@@ -11,6 +11,7 @@ import my.project.librarymanagement.exception.DuplicateResourceException;
 import my.project.librarymanagement.exception.ResourceNotFoundException;
 import my.project.librarymanagement.repository.RoleRepository;
 import my.project.librarymanagement.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,12 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository,  PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -102,7 +105,7 @@ public class UserService {
     private void applyCreateUserData(User user, CreateUserRequest request) {
         user.setFullName(request.getFullName().trim());
         user.setEmail(request.getEmail().trim().toLowerCase());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhoneNumber(request.getPhoneNumber());
         user.setEnabled(request.getEnabled() == null || request.getEnabled());
         user.setStatus(request.getStatus() == null ? UserStatus.ACTIVE : request.getStatus());
@@ -112,7 +115,10 @@ public class UserService {
     private void applyUpdateUserData(User user, UpdateUserRequest request) {
         user.setFullName(request.getFullName().trim());
         user.setEmail(request.getEmail().trim().toLowerCase());
-        user.setPassword(request.getPassword());
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         user.setPhoneNumber(request.getPhoneNumber());
         if (request.getEnabled() != null) {
             user.setEnabled(request.getEnabled());

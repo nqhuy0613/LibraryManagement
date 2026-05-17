@@ -1,8 +1,8 @@
 package my.project.librarymanagement.controller;
 
 import jakarta.validation.Valid;
-import my.project.librarymanagement.dto.request.CreateBookRequest;
-import my.project.librarymanagement.dto.request.UpdateBookRequest;
+import my.project.librarymanagement.dto.request.book.CreateBookRequest;
+import my.project.librarymanagement.dto.request.book.UpdateBookRequest;
 import my.project.librarymanagement.dto.response.BookResponse;
 import my.project.librarymanagement.dto.response.common.ApiResponse;
 import my.project.librarymanagement.service.BookService;

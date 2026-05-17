@@ -1,8 +1,8 @@
 package my.project.librarymanagement.controller;
 
 import jakarta.validation.Valid;
-import my.project.librarymanagement.dto.request.BorrowBookRequest;
-import my.project.librarymanagement.dto.request.ReturnBookRequest;
+import my.project.librarymanagement.dto.request.borrowrecord.BorrowBookRequest;
+import my.project.librarymanagement.dto.request.borrowrecord.ReturnBookRequest;
 import my.project.librarymanagement.dto.response.BorrowRecordResponse;
 import my.project.librarymanagement.dto.response.common.ApiResponse;
 import my.project.librarymanagement.service.BorrowRecordService;
